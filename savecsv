@@ -1,0 +1,47 @@
+import re
+import time
+import requests
+from selenium import webdriver
+from selenium.webdriver.support.select import Select
+from selenium import webdriver
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from bs4 import BeautifulSoup as bs
+import pandas as pd
+import matplotlib.pyplot as plt
+
+driver = webdriver.Chrome("** your chrome driver path")
+
+driver.get('https://twitter.com/search?f=tweets&q=%....*** your twitter glocal search path")
+
+for i in range(1,200):
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+    print(i)
+    
+
+html_source = driver.page_source
+sourcedata= html_source.encode('utf-8')
+soup=bs(sourcedata)
+s = soup.body.findAll('div', attrs={'class' : 'content'})
+
+userid = []
+for t in s: 
+    a = t.text.strip().split('\n') 
+    if a[0] != '' : 
+        userid.append(a[0].split('@')[1])
+date = soup.body.findAll('div', attrs={'class' : 'content'})
+dates=[]
+for n in date:
+        dates.append(n.findAll('a', attrs={'class' : 'tweet-timestamp js-permalink js-nav js-tooltip'})[0].get_text())
+dates[0]
+arr = soup.body.findAll('div', attrs={'class' : 'js-tweet-text-container'})
+tweets=[]
+for n in arr:
+        tweets.append(n.find('p').get_text())
+tweets[0]
+d = {'usernames': userid, 'date': dates, 'tweet': tweets}
+df = pd.DataFrame(data=d)
+df.to_csv('yourdata.csv")
+
+
